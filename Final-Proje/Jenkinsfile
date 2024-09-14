@@ -1,7 +1,3 @@
-def job_name = "${env.JOB_NAME}".split('/')[0]
-def branch = "${env.JOB_NAME}".split('/')[1]
-def pipelineDirectory = "/var/jenkins_home/pipeline-scripts"
-
 pipeline {
     agent any
     tools {
