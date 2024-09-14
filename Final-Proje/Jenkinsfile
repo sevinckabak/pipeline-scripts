@@ -10,39 +10,66 @@ pipeline {
     stages {
         stage("build project") {
             steps {
-                // git 'https://github.com/Rapter1990/springbootmicroservicedailybuffer'
                 echo "Java VERSION"
                 sh 'java --version'
                 echo "Maven VERSION"
                 sh 'mvn --version'
                 echo 'building project...'
 
-                dir("service-registry") {
-                  sh "mvn clean install"
+                dir("${pipelineDirectory}/service-registry") {
+                    sh(script: "mvn clean install", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in service-registry"
+                        }
+                    }
                 }
 
-                dir("configserver") {
-                  sh "mvn clean install"
+                dir("${pipelineDirectory}/configserver") {
+                    sh(script: "mvn clean install", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in configserver"
+                        }
+                    }
                 }
 
-                dir("apigateway") {
-                  sh "mvn clean install -DskipTests"
+                dir("${pipelineDirectory}/apigateway") {
+                    sh(script: "mvn clean install -DskipTests", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in apigateway"
+                        }
+                    }
                 }
 
-                dir("auth-service") {
-                  sh "mvn clean install -DskipTests"
+                dir("${pipelineDirectory}/auth-service") {
+                    sh(script: "mvn clean install -DskipTests", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in auth-service"
+                        }
+                    }
                 }
 
-                dir("productservice") {
-                  sh "mvn clean install -DskipTests"
+                dir("${pipelineDirectory}/productservice") {
+                    sh(script: "mvn clean install -DskipTests", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in productservice"
+                        }
+                    }
                 }
 
-                dir("orderservice") {
-                  sh "mvn clean install -DskipTests"
+                dir("${pipelineDirectory}/orderservice") {
+                    sh(script: "mvn clean install -DskipTests", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in orderservice"
+                        }
+                    }
                 }
 
-                dir("paymentservice") {
-                  sh "mvn clean install -DskipTests"
+                dir("${pipelineDirectory}/paymentservice") {
+                    sh(script: "mvn clean install -DskipTests", returnStatus: true) { status ->
+                        if (status != 0) {
+                            error "Maven build failed in paymentservice"
+                        }
+                    }
                 }
             }
         }
