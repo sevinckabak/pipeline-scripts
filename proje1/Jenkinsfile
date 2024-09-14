@@ -3,27 +3,48 @@ def branch = "${env.JOB_NAME}".split('/')[1]
 def pipelineDirectory = "/var/jenkins_home/pipeline-scripts"
 
 pipeline {
-        agent any
-        options {
-                disableConcurrentBuilds()
+    agent any
+    tools {
+        maven "Maven 3.6.3"
+    }
+    stages {
+        stage("build project") {
+            steps {
+                // git 'https://github.com/Rapter1990/springbootmicroservicedailybuffer'
+                echo "Java VERSION"
+                sh 'java --version'
+                echo "Maven VERSION"
+                sh 'mvn --version'
+                echo 'building project...'
+
+                dir("service-registry") {
+                  sh "mvn clean install"
+                }
+
+                dir("configserver") {
+                  sh "mvn clean install"
+                }
+
+                dir("apigateway") {
+                  sh "mvn clean install -DskipTests"
+                }
+
+                dir("auth-service") {
+                  sh "mvn clean install -DskipTests"
+                }
+
+                dir("productservice") {
+                  sh "mvn clean install -DskipTests"
+                }
+
+                dir("orderservice") {
+                  sh "mvn clean install -DskipTests"
+                }
+
+                dir("paymentservice") {
+                  sh "mvn clean install -DskipTests"
+                }
+            }
         }
-        stages {
-                stage('update pipeline') {
-                        steps {
-                                script {
-                                        sh "git -C " + pipelineDirectory + " fetch"
-                                        sh "git -C " + pipelineDirectory + " checkout -m ${branch}"
-                                        sh "git -C " + pipelineDirectory + " reset --hard origin/${branch}"
-                                }
-                        }
-                }
-                  stage('docker build') {
-                        steps {
-                                script {
-                                        sh "cp " + pipelineDirectory + "/${job_name}/Dockerfile ."
-                                        sh "docker build . --build-arg APPLICATION=${job_name} -t pia-tech/${job_name}:master-v${env.BUILD_ID}"
-                                }
-                        }
-                }
-          }
+    }
 }
